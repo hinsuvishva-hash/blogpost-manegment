@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete, MdEdit } from "react-icons/md";
+import "./Dashboard.css";
 
 function Dashboard() {
+  const [tasks,setTasks]=useState([])
+
+  const fetchData=async()=>{
+    try{
+const fData = await fetch("http://localhost:3000/posts")
+const data=await fData.json();
+setTasks(data)
+    }
+    catch(error){
+      console.log(error);
+      
+    }
+
+  }
+
+  useEffect(()=>{
+    fetchData()
+  },[])
   return (
     <div className="dashboard-page">
       <Navbar />
@@ -46,10 +65,12 @@ function Dashboard() {
 
           <div className="posts-grid">
             {/* static post card 1 */}
-            <div className="post-card">
+          
+            {tasks.map((task)=>(
+               <div className="post-card">
               <div className="post-image-container">
                 <img
-                  src="https://images."
+                  src={task.image}
                   alt="Post"
                   className="post-card-image"
                 />
@@ -66,14 +87,14 @@ function Dashboard() {
 
               <div className="post-card-content">
                 <div className="post-meta">
-                  <span className="post-author">By Admin</span>
-                  <span className="post-date">Recent</span>
+                  <span className="post-author">{task.author}</span>
+                  <span className="post-date">{task.createAt}</span>
                 </div>
 
-                <h3 className="post-card-title">Sample Post Title</h3>
+                <h3 className="post-card-title">{task.title}</h3>
 
                 <p className="post-card-description">
-                  This is the sample static description to maintain thae UI design without any javascript logic.
+                  {task.descreption}
                 </p>
 
                 <button className="read-more-btn">
@@ -81,6 +102,7 @@ function Dashboard() {
                 </button>
               </div>
             </div>
+            ))}
              {/* static post card 2 */}
             <div className="post-card">
               <div className="post-image-container">
