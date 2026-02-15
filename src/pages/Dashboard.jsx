@@ -3,26 +3,48 @@ import Navbar from "../Components/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete, MdEdit } from "react-icons/md";
 import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-  const [tasks,setTasks]=useState([])
+  const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();
 
-  const fetchData=async()=>{
-    try{
-const fData = await fetch("http://localhost:3000/posts")
-const data=await fData.json();
-setTasks(data)
-    }
-    catch(error){
+  const fetchData = async () => {
+    try {
+      const fData = await fetch("http://localhost:3000/posts");
+      const data = await fData.json();
+      setTasks(data);
+    } catch (error) {
       console.log(error);
-      
     }
+  };
 
-  }
+  const editingTask = (task) => {
+    navigate("/create-post", { state: { post: task } });
+  };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?",
+    );
 
-  useEffect(()=>{
-    fetchData()
-  },[])
+    if (!confirmDelete) return;
+
+    try {
+      await fetch(`http://localhost:3000/posts/${id}`, {
+        method: "DELETE",
+      });
+
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+
+      alert("Post Deleted Successfully 🗑️");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="dashboard-page">
       <Navbar />
@@ -40,7 +62,7 @@ setTasks(data)
         <div className="dashboard-stats-overview">
           <div className="dash-card">
             <h3>total Posts</h3>
-            <span className="dash-number">10</span>
+            <span className="dash-number">{tasks.length}</span>
           </div>
 
           <div className="dash-card">
@@ -57,88 +79,58 @@ setTasks(data)
         <section className="posts-section">
           <div className="section-header">
             <h2 className="section-title">Recent feed</h2>
-            <button className="create-shortcut btn">
+            <button
+              className="create-shortcut-btn"
+              onClick={() => navigate("/create-post")}
+            >
               <FaPlus />
               New Post
             </button>
           </div>
 
           <div className="posts-grid">
-            {/* static post card 1 */}
-          
-            {tasks.map((task)=>(
-               <div className="post-card">
-              <div className="post-image-container">
-                <img
-                  src={task.image}
-                  alt="Post"
-                  className="post-card-image"
-                />
 
-                <div className="post-actions">
-                  <button className="action-btn  edit-btn" title="Edit Post">
-                    <MdEdit size={22} color="white" />
-                  </button>
-                  <button className="action-btn  edit-btn" title="Delete Post">
-                    <MdDelete size={22} color="white" />
-                  </button>
+            {tasks.map((task) => (
+              <div className="post-card" key={task.id}>
+                <div className="post-image-container">
+                  <img
+                    src={task.image}
+                    alt="Post"
+                    className="post-card-image"
+                  />
+
+                  <div className="post-actions">
+                    <button
+                      className="action-btn edit-btn"
+                      title="Edit Post"
+                      onClick={() => editingTask(task)}
+                    >
+                      <MdEdit size={22} color="white" />
+                    </button>
+                    <button
+                      className="action-btn delete-btn"
+                      title="Delete Post"
+                      onClick={() => handleDelete(task.id)}
+                    >
+                      <MdDelete size={22} color="white" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="post-card-content">
+                  <div className="post-meta">
+                    <span className="post-author">{task.author}</span>
+                    <span className="post-date">{task.createAt}</span>
+                  </div>
+
+                  <h3 className="post-card-title">{task.title}</h3>
+
+                  <p className="post-card-description">{task.description}</p>
+
+                  <button className="read-more-btn">Read More</button>
                 </div>
               </div>
-
-              <div className="post-card-content">
-                <div className="post-meta">
-                  <span className="post-author">{task.author}</span>
-                  <span className="post-date">{task.createAt}</span>
-                </div>
-
-                <h3 className="post-card-title">{task.title}</h3>
-
-                <p className="post-card-description">
-                  {task.descreption}
-                </p>
-
-                <button className="read-more-btn">
-                  Read More
-                </button>
-              </div>
-            </div>
             ))}
-             {/* static post card 2 */}
-            <div className="post-card">
-              <div className="post-image-container">
-                <img
-                  src="https://images."
-                  alt="Post"
-                  className="post-card-image"
-                />
-
-                <div className="post-actions">
-                  <button className="action-btn  edit-btn" title="Edit Post">
-                    <MdEdit size={22} color="white" />
-                  </button>
-                  <button className="action-btn  edit-btn" title="Delete Post">
-                    <MdDelete size={22} color="white" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="post-card-content">
-                <div className="post-meta">
-                  <span className="post-author">By user</span>
-                  <span className="post-date">Recent</span>
-                </div>
-
-                <h3 className="post-card-title">Sample Post Title</h3>
-
-                <p className="post-card-description">
-                  This is the sample static description to maintain thae UI design without any javascript logic.
-                </p>
-
-                <button className="read-more-btn">
-                  Read More
-                </button>
-              </div>
-            </div>
           </div>
         </section>
       </main>

@@ -8,9 +8,10 @@ import Register from "./pages/Register";
 import { ToastContainer } from "react-toastify";
 import Dashboard from "./pages/Dashboard";
 import AuthGuard from "./Auth/AuthGuard";
+import CreatePost from "./pages/Createpost";
 const DefultRouter = () => {
   const data = JSON.parse(localStorage.getItem("blog_rdata"));
-  
+
   if (data) {
     return <Navigate to="/dashboard" replace />;
   } else {
@@ -44,6 +45,14 @@ function App() {
       element: (
         <AuthGuard required={true}>
           <Dashboard />
+        </AuthGuard>
+      ),
+    },
+    {
+      path: "/create-post",
+      element: (
+        <AuthGuard required={true}>
+          <CreatePost />
         </AuthGuard>
       ),
     },
