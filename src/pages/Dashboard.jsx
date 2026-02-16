@@ -89,7 +89,6 @@ function Dashboard() {
           </div>
 
           <div className="posts-grid">
-
             {tasks.map((task) => (
               <div className="post-card" key={task.id}>
                 <div className="post-image-container">
@@ -127,7 +126,12 @@ function Dashboard() {
 
                   <p className="post-card-description">{task.description}</p>
 
-                  <button className="read-more-btn">Read More</button>
+                  <button
+                    className="read-more-btn"
+                    onClick={() => navigate(`/post/${task.id}`)}
+                  >
+                    Read More
+                  </button>
                 </div>
               </div>
             ))}

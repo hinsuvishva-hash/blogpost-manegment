@@ -1,10 +1,10 @@
-.post-details-page{
+.Post-details-page{
   min-width: 100vh;
   background-color: white;
   font-family: 'Inter',sans-serif;
 }
 
-.post-details-Container{
+.Post-details-Container{
   max-width: 850px;
   margin: 0 auto;
   padding: 3rem 1.5rem 6rem;

@@ -3,12 +3,16 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { ToastContainer } from "react-toastify";
 import Dashboard from "./pages/Dashboard";
+import CreatePost from "./pages/CreatePost";
+import PostDetails from "./pages/PostDetails";
 import AuthGuard from "./Auth/AuthGuard";
-import CreatePost from "./pages/Createpost";
+import { ToastContainer } from "react-toastify";
+import Analytics from "./pages/Analytics";
+
 const DefultRouter = () => {
   const data = JSON.parse(localStorage.getItem("blog_rdata"));
 
@@ -18,6 +22,7 @@ const DefultRouter = () => {
     return <Navigate to="/login" replace />;
   }
 };
+
 function App() {
   const route = createBrowserRouter([
     {
@@ -56,7 +61,24 @@ function App() {
         </AuthGuard>
       ),
     },
+    {
+      path: "/post/:id",
+      element: (
+        <AuthGuard required={true}>
+          <PostDetails />
+        </AuthGuard>
+      ),
+    },
+    {
+      path: "/Analytics",
+      element: (
+        <AuthGuard required={true}>
+          <Analytics/>
+        </AuthGuard>
+      ),
+    },
   ]);
+
   return (
     <>
       <RouterProvider router={route} />
@@ -64,13 +86,6 @@ function App() {
       <ToastContainer
         position="top-right"
         autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
         theme="light"
       />
     </>
